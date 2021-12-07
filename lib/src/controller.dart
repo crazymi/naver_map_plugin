@@ -229,6 +229,12 @@ class NaverMapController {
     final result = await _channel.invokeMethod<double>('meter#px');
     return result ?? 0.0;
   }
+
+  Future<LatLng> fromScreenLocation(Offset offset) async {
+    final result = (await _channel.invokeMethod(
+        'projection#fromScreenLocation', <String, dynamic>{'x': offset.dx, 'y': offset.dy}))!;
+    return LatLng(result[0], result[1]);
+  }
 }
 
 /// <h2>위치 오버레이</h2>
@@ -248,6 +254,11 @@ class LocationOverlay {
     _channel.invokeMethod("LO#set#position", {
       'position': position._toJson(),
     });
+  }
+
+  Future<LatLng> getPosition() async {
+    final result = (await _channel.invokeMethod("LO#get#position"))!;
+    return LatLng(result[0], result[1]);
   }
 
   /// __setBearing__ 을 이용하면 위치 오버레이의 베어링을 변경할 수 있습니다.

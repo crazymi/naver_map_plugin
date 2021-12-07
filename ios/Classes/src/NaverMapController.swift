@@ -171,6 +171,16 @@ class NaverMapController: NSObject, FlutterPlatformView, NaverMapOptionSink, NMF
             let meterPerPx = mapView!.projection.metersPerPixel().advanced(by: 0.0)
             result(meterPerPx)
             break
+        case "projection#fromScreenLocation":
+            if let arg = call.arguments as? NSDictionary {
+                if let x = arg["x"] as? CGFloat, let y = arg["y"] as? CGFloat {
+                    let latlng = mapView!.projection.latlng(from: CGPoint(x: x, y: y))
+                    result(latlngToJson(latlng: latlng))
+                }
+            } else {
+                result(nil)
+            }
+            break
         case "camera#move" :
             if let arg = call.arguments as? NSDictionary {
                 let update = toCameraUpdate(json: arg["cameraUpdate"]!)
@@ -272,6 +282,10 @@ class NaverMapController: NSObject, FlutterPlatformView, NaverMapOptionSink, NMF
                 mapView!.locationOverlay.heading = CGFloat(bearing.floatValue)
             }
             result(nil)
+            break
+        case "LO#get#position" :
+            let latlng = mapView!.locationOverlay.location
+            result(latlngToJson(latlng: latlng))
             break
         default:
             print("지정되지 않은 메서드콜 함수명이 들어왔습니다.\n함수명 : \(call.method)")

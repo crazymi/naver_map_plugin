@@ -288,6 +288,19 @@ public class NaverMapController implements
                     result.success(naverMap.getProjection().getMetersPerPixel());
                 }
                 break;
+            case "projection#fromScreenLocation" :
+            {
+                if (naverMap == null) {
+                    Log.e("fromScreenLocation", "네이버맵이 초기화되지 않았습니다.");
+                    result.success(null);
+                    break;
+                }
+                float x = Convert.toFloat(methodCall.argument("x"));
+                float y = Convert.toFloat(methodCall.argument("y"));
+                LatLng position = naverMap.getProjection().fromScreenLocation(PointF(x, y));
+                result.success(Convert.latlngToJson(position));
+            }
+            break;
             case "markers#update":
                 {
                     List markersToAdd = methodCall.argument("markersToAdd");
@@ -403,6 +416,16 @@ public class NaverMapController implements
                             null);
                 }
                 break;
+            case "LO#get#position":
+            {
+                if(naverMap != null) {
+                    LatLng position = naverMap.getLocationOverlay().getPosition();
+                    result.success(Convert.latlngToJson(position));
+                }else result.error("네이버맵 초기화 안됨.",
+                        "네이버 지도가 생성되기 전에 이 메서드를 사용할 수 없습니다.",
+                        null);
+            }
+            break;
         }
     }
 

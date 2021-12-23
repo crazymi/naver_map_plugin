@@ -1,4 +1,3 @@
-
 part of naver_map_plugin;
 
 /// ### 네이버지도
@@ -377,6 +376,12 @@ class _NaverMapState extends State<NaverMap> {
         _markers[markerId],
         <String, int?>{'width': iconWidth, 'height': iconHeight},
       );
+    }
+  }
+
+  void _infoWindowTapped(String markerId) {
+    if (_markers[markerId]?.onInfoWindowTab != null) {
+      _markers[markerId]!.onInfoWindowTab!(_markers[markerId]);
     }
   }
 

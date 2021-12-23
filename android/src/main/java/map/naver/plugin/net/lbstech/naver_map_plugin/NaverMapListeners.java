@@ -20,6 +20,8 @@ import java.util.Map;
 
 import io.flutter.plugin.common.MethodChannel;
 
+import map.naver.plugin.net.lbstech.naver_map_plugin.NaverMapController;
+
 public class NaverMapListeners implements
         NaverMap.OnMapClickListener,
         NaverMap.OnSymbolClickListener,
@@ -34,6 +36,7 @@ NaverMap.OnMapTwoFingerTapListener,
     private final MethodChannel channel;
     private final Context context;
     private NaverMap naverMap;
+    private NaverMarkerController markerController;
 
     NaverMapListeners(MethodChannel channel, Context context, NaverMap naverMap) {
         this.channel = channel;
@@ -41,8 +44,15 @@ NaverMap.OnMapTwoFingerTapListener,
         this.naverMap = naverMap;
     }
 
+    public void setMarkerController(NaverMarkerController markerController) {
+        this.markerController = markerController;
+    }
+
     @Override
     public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+        if (this.markerController != null) {
+            this.markerController.closeInfoWindowIfOpened();
+        }
         final Map<String, Object> arguments = new HashMap<>(2);
         arguments.put("position", Convert.latLngToJson(latLng));
         channel.invokeMethod("map#onTap", arguments);
@@ -122,6 +132,14 @@ NaverMap.OnMapTwoFingerTapListener,
 
             channel.invokeMethod("marker#onTap", arguments);
             return true;
+        } else if (overlay instanceof InfoWindow) {
+            InfoWindow infoWindow = (InfoWindow) overlay;
+            NaverMarkerController.MarkerController controller = (NaverMarkerController.MarkerController) infoWindow.getMarker().getTag();
+            if (controller == null) return true;
+
+            final Map<String, Object> arguments = new HashMap<>(2);
+            arguments.put("markerId", controller.id);
+            channel.invokeMethod("infoWindow#onTap", arguments);
         } else if (overlay instanceof PathOverlay) {
             NaverPathsController.PathController controller =
                     (NaverPathsController.PathController) overlay.getTag();

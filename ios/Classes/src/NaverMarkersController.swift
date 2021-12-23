@@ -22,7 +22,7 @@ class NMarkerController: NSObject {
         
         super.init()
         marker.userInfo = ["marker" : self]
-        
+
         interpret(json: json)
     }
     
@@ -130,6 +130,8 @@ class NaverMarkersController: NSObject {
         self.naverMap = naverMap
         self.registrar = registrar
         self.touchHandler = touchHandler
+
+        self.infoWindow.touchHandler = touchHandler
     }
     
     func add(jsonArray: Array<Any>) {
@@ -166,6 +168,10 @@ class NaverMarkersController: NSObject {
                 }
             }
         }
+    }
+
+    func closeInfoWindowIfOpened() {
+        infoWindow.close()
     }
     
     func toggleInfoWindow(_ marker: NMarkerController) -> Bool{

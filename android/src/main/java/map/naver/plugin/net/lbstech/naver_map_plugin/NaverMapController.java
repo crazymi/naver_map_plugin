@@ -141,6 +141,7 @@ public class NaverMapController implements
         // - 마커
         markerController = new NaverMarkerController(naverMap, listeners, density, mapView.getContext());
         markerController.add(initialMarkers);
+        listeners.setMarkerController(markerController);
 
         // - 원형 오버레이
         circleController = new NaverCircleController(naverMap, listeners, density);

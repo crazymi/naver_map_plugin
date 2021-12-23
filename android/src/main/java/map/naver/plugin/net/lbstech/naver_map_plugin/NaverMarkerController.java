@@ -38,6 +38,8 @@ class NaverMarkerController {
         onClickListener = listener;
         this.density = density;
         this.context = context;
+
+        this.infoWindow.setOnClickListener(onClickListener);
     }
 
     void add(List jsonArray) {
@@ -79,6 +81,10 @@ class NaverMarkerController {
             if (idToController.containsKey(id) && idToController.get(id) != null)
                 idToController.get(id).interpret(data);
         }
+    }
+
+    void closeInfoWindowIfOpened() {
+        infoWindow.close();
     }
 
     class MarkerController{

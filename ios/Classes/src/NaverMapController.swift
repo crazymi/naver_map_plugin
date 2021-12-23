@@ -377,6 +377,7 @@ class NaverMapController: NSObject, FlutterPlatformView, NaverMapOptionSink, NMF
     
     // Naver touch Delegate method
     func mapView(_ mapView: NMFMapView, didTapMap latlng: NMGLatLng, point: CGPoint) {
+        markersController!.closeInfoWindowIfOpened()
         channel?.invokeMethod("map#onTap", arguments: ["position" : [latlng.lat, latlng.lng]])
     }
     
@@ -394,6 +395,12 @@ class NaverMapController: NSObject, FlutterPlatformView, NaverMapOptionSink, NMF
                                                               "iconWidth" :  pxFromPt(marker.marker.width),
                                                               "iconHeight" : pxFromPt(marker.marker.height)])
             return markersController!.toggleInfoWindow(marker)
+        } else if let infoWindow = overlay as? NMFInfoWindow {
+            if let marker = infoWindow.marker?.userInfo["marker"] as? NMarkerController {
+                channel?.invokeMethod("infoWindow#onTap",
+                                      arguments: ["markerId" : marker.id])
+            }
+            return true
         } else if let path = overlay.userInfo["path"] as? NPathController {
             channel?.invokeMethod("path#onTap",
                                   arguments: ["pathId" , path.id])

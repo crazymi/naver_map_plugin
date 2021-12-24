@@ -173,6 +173,10 @@ class NaverMarkersController: NSObject {
     func closeInfoWindowIfOpened() {
         infoWindow.close()
     }
+
+    func getMarkerById(id: String) -> NMarkerController? {
+        return self.idToController[id]
+    }
     
     func toggleInfoWindow(_ marker: NMarkerController) -> Bool{
         if let title = marker.infoWindowTitle {

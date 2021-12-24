@@ -235,9 +235,15 @@ class NaverMapController {
   }
 
   Future<LatLng> fromScreenLocation(Offset offset) async {
-    final result = (await _channel.invokeMethod(
-        'projection#fromScreenLocation', <String, dynamic>{'x': offset.dx, 'y': offset.dy}))!;
+    final result = (await _channel.invokeMethod('projection#fromScreenLocation',
+        <String, dynamic>{'x': offset.dx, 'y': offset.dy}))!;
     return LatLng(result[0], result[1]);
+  }
+
+  // TODO implement in android
+  Future<void> toggleInfoWindow(String markerId) async {
+    await _channel.invokeMethod(
+        'infoWindow#toggle', <String, dynamic>{'markerId': markerId});
   }
 }
 

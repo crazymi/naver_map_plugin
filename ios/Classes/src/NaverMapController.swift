@@ -287,6 +287,17 @@ class NaverMapController: NSObject, FlutterPlatformView, NaverMapOptionSink, NMF
             let latlng = mapView!.locationOverlay.location
             result(latlngToJson(latlng: latlng))
             break
+        case "infoWindow#toggle" :
+            if let arg = call.arguments as? NSDictionary {
+                if let markerId = arg["markerId"] as? String {
+                    let marker = markersController?.getMarkerById(id: markerId)
+                    if marker != nil {
+                        _ = markersController?.toggleInfoWindow(marker!)
+                    }
+                }
+            }
+            result(nil)
+            break
         default:
             print("지정되지 않은 메서드콜 함수명이 들어왔습니다.\n함수명 : \(call.method)")
         }
